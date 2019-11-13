@@ -67,22 +67,36 @@ export default {
     }
   },
   methods: {
+    // 点击登录验证
     submitForm (formName) {
       this.$refs[formName].validate(valid => {
+        // valid是否验证成功
         if (valid) {
-          this.$message({
-            message: '恭喜你，验证成功哦',
-            type: 'success'
+          // 调接口
+          this.$axios({
+            method: 'POST',
+            data: this.loginForm
           })
-        } else {
-          this.$message({
-            message: '警告哦，好好输入哦',
-            type: 'warning'
-          })
+            .then(res => {
+              // 提示
+              this.$message({
+                message: '恭喜你，验证成功哦',
+                type: 'success'
+              })
+              console.log(res.data)
+              localStorage.setItem('user', res.data.data.token)
+              this.$router.push('/home')
+            })
+            .catch(err => {
+              console.log(err)
+              this.$message({
+                message: '小可爱，你输入的不对哦',
+                type: 'warning'
+              })
+            })
         }
       })
     }
-
   }
 }
 </script>
