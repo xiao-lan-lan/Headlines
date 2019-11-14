@@ -48,7 +48,6 @@ export default {}
 .home-aside {
   width: 200px;
   height: 100vh;
-  overflow: hidden;
   background-color: #323745;
   .logo {
     text-align: center;
