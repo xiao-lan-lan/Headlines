@@ -1,18 +1,22 @@
 <template>
   <div>
     <el-row type="flex" class="row-bg header-row" justify="space-between" align="middle">
+      <!-- 标题 -->
       <el-col :span="8" class="left">
         <i class="el-icon-s-fold" style="font-size:22px"></i>
         <span class="title">江苏传智播客教育科技股份有限公司</span>
       </el-col>
       <el-col :span="8" class="right">
+        <!-- 搜索&消息 -->
         <el-tooltip class="item" effect="dark" content="搜索" placement="bottom" style="float:left">
           <el-input placeholder="请输入搜索文章的内容" class="search"></el-input>
         </el-tooltip>
         <el-tooltip class="item" effect="dark" content="消息" placement="bottom" style="float:left">
           <span>消息</span>
         </el-tooltip>
+        <!-- 头像 -->
         <img src="../assets/img/avatar.jpg" alt />
+        <!-- 用户信息 -->
         <el-dropdown style="float:left">
           <span class="el-dropdown-link">
             小可爱
@@ -21,7 +25,8 @@
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item icon="el-icon-plus">个人信息</el-dropdown-item>
             <el-dropdown-item icon="el-icon-circle-plus">Git地址</el-dropdown-item>
-            <el-dropdown-item icon="el-icon-circle-plus-outline">退出</el-dropdown-item>
+            <!-- 组件注册原生事件，需要加 .native 修饰符 -->
+            <el-dropdown-item icon="el-icon-circle-plus-outline" @click.native="onLogout">退出</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </el-col>
@@ -30,7 +35,15 @@
 </template>
 
 <script>
-export default {}
+export default {
+  methods: {
+    // 用户退出
+    onLogout: function () {
+      localStorage.removeItem('user')
+      this.$router.push('/login')
+    }
+  }
+}
 </script>
 
 <style lang='less' scoped>
