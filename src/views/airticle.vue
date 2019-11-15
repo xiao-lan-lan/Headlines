@@ -15,9 +15,18 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="频道列表">
-          <el-select placeholder="请选择频道" v-model="form.region">
-            <el-option label="区域一" value="shanghai"></el-option>
-            <el-option label="区域二" value="beijing"></el-option>
+          <el-select placeholder="请选择" v-model="category.id">
+            <template>
+              <el-option
+                v-for="item in category"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              >
+                <span style="float: left">{{ item.name }}</span>
+                <!-- <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span> -->
+              </el-option>
+            </template>
           </el-select>
         </el-form-item>
         <el-form-item label="时间选择">
@@ -40,17 +49,19 @@
       <el-table :data="airticleData" style="width: 100%" class="airtable">
         <el-table-column prop="date" label="头像" width="180" align="center">
           <template slot-scope="scope">
-            <img :src="scope.row.cover.images[0]" width="50px" />
+            <img :src="scope.row.cover.images[0]" width="80px" />
           </template>
         </el-table-column>
         <el-table-column prop="title" label="标题" width="180" align="center"></el-table-column>
         <el-table-column prop="status" label="状态" align="center">
           <template slot-scope="scope">
-            <el-tag :type="airticleStatus[scope.row.status].type">{{airticleStatus[scope.row.status].label}}</el-tag>
+            <el-tag
+              :type="airticleStatus[scope.row.status].type"
+            >{{airticleStatus[scope.row.status].label}}</el-tag>
           </template>
         </el-table-column>
         <el-table-column prop="pubdate" label="时间" align="center"></el-table-column>
-        <el-table-column prop="address" label="操作" align="center">
+        <el-table-column prop="id" label="操作" align="center">
           <el-button type="primary" plain size="mini" icon="el-icon-edit">修改</el-button>
           <el-button type="danger" plain size="mini" icon="el-icon-delete">删除</el-button>
         </el-table-column>
@@ -62,6 +73,7 @@
 
 <script>
 export default {
+  name: 'airticle',
   data () {
     return {
       radio: 3,
@@ -90,7 +102,8 @@ export default {
         {
           type: 'danger',
           label: '已删除'
-        }],
+        }
+      ],
       // 文章列表设置初始数据，图片会报错
       airticleData: [
         // {
@@ -100,7 +113,8 @@ export default {
         //     images: []
         //   }
         // }
-      ]
+      ],
+      category: []
     }
   },
   methods: {
@@ -113,7 +127,7 @@ export default {
           console.log(res.data)
           res.data.data.results.forEach(item => {
             if (!item.cover.images.length) {
-              item.cover.images[0] = 'http://img5.imgtn.bdimg.com/it/u=3323289422,2847919939&fm=26&gp=0.jpg'
+              item.cover.images[0] = 'http://img55.it168.com/ArticleImages/fnw/2016/1027/dab91b30-22e8-47be-b273-ed397f592088.jpg'
             }
           })
           this.airticleData = res.data.data.results
@@ -121,10 +135,20 @@ export default {
         .catch(err => {
           console.log(err)
         })
+    },
+    loadCategory: function () {
+      this.$axios({
+        method: 'GET',
+        url: '/channels'
+      }).then(res => {
+        console.log(res.data)
+        this.category = res.data.data.channels
+      })
     }
   },
   created () {
     this.loadAirticle()
+    this.loadCategory()
   }
 }
 </script>
