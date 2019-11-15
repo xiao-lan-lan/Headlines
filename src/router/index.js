@@ -2,6 +2,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import axios from 'axios'
+import NProgress from 'nprogress'
 
 // 引入一级路由模块
 import login from '../views/login.vue'
@@ -79,6 +80,8 @@ const router = new VueRouter({
 
 // 导航守卫,控制只有携带token才能访问页面
 router.beforeEach((to, from, next) => {
+  // 开始进度条加载
+  NProgress.start()
   const token = localStorage.getItem('user')
 
   // 去登陆页直接跳转，无需携带token
@@ -88,12 +91,18 @@ router.beforeEach((to, from, next) => {
   }
 
   // 判断是否携带token
-  token ? next() : next('/login')
-  // if (token) {
-  //   next()
-  // } else {
-  //   next('/login')
-  // }
+  // token ? next() : next('/login')
+  if (token) {
+    next()
+  } else {
+    next('/login')
+    NProgress.done()
+  }
+})
+
+// 导航后置钩子，结束进度条加载
+router.afterEach(route => {
+  NProgress.done()
 })
 
 export default router
