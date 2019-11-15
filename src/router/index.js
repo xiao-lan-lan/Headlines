@@ -10,6 +10,10 @@ import layout from '../views/layout.vue'
 // 引入二级路由模块
 import home from '../views/home.vue'
 import airticle from '../views/airticle.vue'
+import publish from '../views/publish.vue'
+import comment from '../views/comment.vue'
+import material from '../views/material.vue'
+import GraphicData from '../views/Graphic_data.vue'
 
 // 配置插件
 Vue.use(VueRouter)
@@ -30,6 +34,7 @@ const routes = [
   {
     path: '/home',
     component: layout,
+    // 二级路由
     children: [
       {
         path: '',
@@ -38,6 +43,22 @@ const routes = [
       {
         path: '/airticle',
         component: airticle
+      },
+      {
+        path: '/publish',
+        component: publish
+      },
+      {
+        path: '/comment',
+        component: comment
+      },
+      {
+        path: '/material',
+        component: material
+      },
+      {
+        path: '/graphicdata',
+        component: GraphicData
       }
     ]
   }
