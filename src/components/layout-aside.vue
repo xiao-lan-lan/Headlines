@@ -54,6 +54,7 @@ export default {}
   width: 200px;
   height: 100vh;
   background-color: #323745;
+  position: fixed;
   .logo {
     text-align: center;
     padding: 20px 0;
@@ -61,6 +62,9 @@ export default {}
     img {
       width: 120px;
     }
+  }
+  .el-menu {
+    border-right: none;
   }
   .el-submenu .el-menu-item:hover {
     background-color: #3296fa !important;
