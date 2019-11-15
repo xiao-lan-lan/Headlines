@@ -5,7 +5,11 @@ import axios from 'axios'
 
 // 引入一级路由模块
 import login from '../views/login.vue'
+import layout from '../views/layout.vue'
+
+// 引入二级路由模块
 import home from '../views/home.vue'
+import airticle from '../views/airticle.vue'
 
 // 配置插件
 Vue.use(VueRouter)
@@ -14,18 +18,28 @@ axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0'
 Vue.prototype.$axios = axios
 
 const routes = [
-  // 单页应用：一级路由就是登录页和主页;
-  {
-    path: '/',
-    redirect: '/login'
-  },
+  // 单页应用：一级路由就是登录页和主页外壳;
+  // {
+  //   path: '/',
+  //   redirect: '/login'
+  // },
   {
     path: '/login',
     component: login
   },
   {
     path: '/home',
-    component: home
+    component: layout,
+    children: [
+      {
+        path: '',
+        component: home
+      },
+      {
+        path: '/airticle',
+        component: airticle
+      }
+    ]
   }
 
   // {
