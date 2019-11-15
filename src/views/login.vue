@@ -75,6 +75,7 @@ export default {
           // 调接口
           this.$axios({
             method: 'POST',
+            url: '/authorizations',
             data: this.loginForm
           })
             .then(res => {

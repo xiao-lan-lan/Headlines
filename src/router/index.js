@@ -10,7 +10,7 @@ import home from '../views/home.vue'
 // 配置插件
 Vue.use(VueRouter)
 
-axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0/authorizations'
+axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0'
 Vue.prototype.$axios = axios
 
 const routes = [
