@@ -39,8 +39,23 @@ export default {
   methods: {
     // 用户退出
     onLogout: function () {
-      localStorage.removeItem('user')
-      this.$router.push('/login')
+      this.$confirm('小可爱，确定要退出么？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        localStorage.removeItem('user')
+        this.$router.push('/login')
+        this.$message({
+          type: 'success',
+          message: '再见喽'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '舍不得我嘛？'
+        })
+      })
     }
   }
 }
