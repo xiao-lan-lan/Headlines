@@ -15,7 +15,7 @@
           <span>消息</span>
         </el-tooltip>
         <!-- 头像 -->
-        <img src="../assets/img/avatar.jpg" alt />
+        <img src="http://img5.imgtn.bdimg.com/it/u=3323289422,2847919939&fm=26&gp=0.jpg" alt />
         <!-- 用户信息 -->
         <el-dropdown style="float:left">
           <span class="el-dropdown-link">
@@ -70,6 +70,7 @@ export default {
       border-radius: 50%;
       margin-right: 10px;
       margin-left: 10px;
+      width: 40px;
     }
   }
 }

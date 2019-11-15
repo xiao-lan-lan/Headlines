@@ -15,13 +15,14 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="频道列表">
-          <el-select placeholder="请选择频道">
+          <el-select placeholder="请选择频道" v-model="form.region">
             <el-option label="区域一" value="shanghai"></el-option>
             <el-option label="区域二" value="beijing"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="时间选择">
           <el-date-picker
+            v-model="value1"
             type="daterange"
             range-separator="-"
             start-placeholder="开始日期"
@@ -33,14 +34,22 @@
     <!-- / 筛选部分 -->
 
     <!-- 内容部分 -->
-    <el-card class="box-card" shadow="never">
+    <el-card class="box-card" shadow="never" style="margin-top:15px">
       共找到59938条符合条件的内容
       <div class="line"></div>
-      <el-table :data="tableData" style="width: 100%" class="airtable">
-        <el-table-column prop="date" label="头像" width="180" align="center"></el-table-column>
-        <el-table-column prop="name" label="标题" width="180" align="center"></el-table-column>
-        <el-table-column prop="address" label="状态" align="center"></el-table-column>
-        <el-table-column prop="address" label="时间" align="center"></el-table-column>
+      <el-table :data="airticleData" style="width: 100%" class="airtable">
+        <el-table-column prop="date" label="头像" width="180" align="center">
+          <template slot-scope="scope">
+            <img :src="scope.row.cover.images[0]" width="50px" />
+          </template>
+        </el-table-column>
+        <el-table-column prop="title" label="标题" width="180" align="center"></el-table-column>
+        <el-table-column prop="status" label="状态" align="center">
+          <template slot-scope="scope">
+            <el-tag :type="airticleStatus[scope.row.status].type">{{airticleStatus[scope.row.status].label}}</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column prop="pubdate" label="时间" align="center"></el-table-column>
         <el-table-column prop="address" label="操作" align="center">
           <el-button type="primary" plain size="mini" icon="el-icon-edit">修改</el-button>
           <el-button type="danger" plain size="mini" icon="el-icon-delete">删除</el-button>
@@ -56,24 +65,66 @@ export default {
   data () {
     return {
       radio: 3,
-      tableData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1517 弄'
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1519 弄'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1516 弄'
-      }]
+      value1: '',
+      form: {
+        name: '',
+        region: ''
+      },
+      airticleStatus: [
+        {
+          type: 'info',
+          label: '草稿'
+        },
+        {
+          type: 'warning',
+          label: '待审核'
+        },
+        {
+          type: 'success',
+          label: '审核通过'
+        },
+        {
+          type: 'warning',
+          label: '审核失败'
+        },
+        {
+          type: 'danger',
+          label: '已删除'
+        }],
+      // 文章列表设置初始数据，图片会报错
+      airticleData: [
+        // {
+        //   pubdate: '',
+        //   title: '',
+        //   cover: {
+        //     images: []
+        //   }
+        // }
+      ]
     }
+  },
+  methods: {
+    loadAirticle: function () {
+      this.$axios({
+        method: 'GET',
+        url: '/articles'
+      })
+        .then(res => {
+          console.log(res.data)
+          res.data.data.results.forEach(item => {
+            if (!item.cover.images.length) {
+              item.cover.images[0] = 'http://img5.imgtn.bdimg.com/it/u=3323289422,2847919939&fm=26&gp=0.jpg'
+            }
+          })
+          this.airticleData = res.data.data.results
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
+  },
+  created () {
+    this.loadAirticle()
   }
 }
 </script>

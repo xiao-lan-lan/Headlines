@@ -20,6 +20,7 @@ import GraphicData from '../views/Graphic_data.vue'
 Vue.use(VueRouter)
 
 axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0'
+axios.defaults.headers = { Authorization: `Bearer ${localStorage.getItem('user')}` }
 Vue.prototype.$axios = axios
 
 const routes = [
