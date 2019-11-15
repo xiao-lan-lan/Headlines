@@ -77,4 +77,23 @@ const router = new VueRouter({
   routes
 })
 
+// 导航守卫,控制只有携带token才能访问页面
+router.beforeEach((to, from, next) => {
+  const token = localStorage.getItem('user')
+
+  // 去登陆页直接跳转，无需携带token
+  if (to.path === '/login') {
+    next()
+    return
+  }
+
+  // 判断是否携带token
+  token ? next() : next('/login')
+  // if (token) {
+  //   next()
+  // } else {
+  //   next('/login')
+  // }
+})
+
 export default router
