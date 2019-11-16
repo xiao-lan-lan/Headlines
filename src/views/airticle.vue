@@ -141,7 +141,10 @@ export default {
       category: [],
 
       // 频道
-      channel_id: null
+      channel_id: null,
+
+      // 当前页
+      currentPage: 1
     }
   },
   methods: {
@@ -184,22 +187,23 @@ export default {
     onChangePage: function (page) {
       console.log(page)
       this.loadAirticle(page)
+      this.currentPage = page
     },
 
     // 单选切换筛选
     onRadiochange: function () {
-      this.loadAirticle(1)
+      this.loadAirticle(this.currentPage)
     },
 
     // 频道切换渲染
     onCategoryChange: function () {
       console.log(this.channel_id)
-      this.loadAirticle(1)
+      this.loadAirticle(this.currentPage)
     },
 
     // 日期筛选切换
     onDateChange: function () {
-      this.loadAirticle(1)
+      this.loadAirticle(this.currentPage)
     }
   },
   created () {
