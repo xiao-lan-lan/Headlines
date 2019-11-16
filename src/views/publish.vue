@@ -9,7 +9,7 @@
           <el-input v-model="articleform.title" placeholder="文章名称"></el-input>
         </el-form-item>
 
-        <el-form-item label="内容">
+        <el-form-item label="内容" class="content">
           <quillEditor v-model="articleform.content" class="richtext"></quillEditor>
         </el-form-item>
 
@@ -75,6 +75,7 @@ export default {
     }
   },
   methods: {
+    // 发表文章
     onSubmit (draft) {
       console.log(draft)
       this.$axios({
@@ -97,6 +98,8 @@ export default {
         console.log(err)
       })
     },
+
+    // 渲染文章类别
     loadCategory: function () {
       this.$axios({
         method: 'GET',
@@ -114,7 +117,12 @@ export default {
 </script>
 
 <style lang='less' scoped>
-  .richtext .ql-container.ql-snow {
-    height: 30px;
+.content {
+  margin-bottom: 30px;
+  height: 350px;
+   .richtext{
+    height: 260px;
   }
+}
+
 </style>

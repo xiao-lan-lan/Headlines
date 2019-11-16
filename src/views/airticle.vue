@@ -52,7 +52,15 @@
       <div class="line"></div>
 
       <!-- 表格数据 -->
-      <el-table :data="airticleData" style="width: 100%" class="airtable">
+      <el-table
+        :data="airticleData"
+        style="width: 100%"
+        class="airtable"
+        v-loading="loading"
+        element-loading-text="拼命加载中"
+        element-loading-spinner="el-icon-loading"
+        element-loading-background="rgba(0, 0, 0, 0.8)"
+      >
         <el-table-column prop="date" label="头像" width="180" align="center">
           <template slot-scope="scope">
             <img :src="scope.row.cover.images[0]" width="80px" v-if="scope.row.cover.images[0]" />
@@ -158,7 +166,10 @@ export default {
       channel_id: null,
 
       // 当前页
-      currentPage: 1
+      currentPage: 1,
+
+      // 加载状态
+      loading: true
     }
   },
   methods: {
@@ -182,6 +193,8 @@ export default {
         })
         .catch(err => {
           console.log(err)
+        }).finally(() => {
+          this.loading = false
         })
     },
 
@@ -225,12 +238,14 @@ export default {
       this.$axios({
         method: 'DELETE',
         url: `/articles/${id}`
-      }).then(res => {
-        console.log(res)
-        this.loadAirticle(this.currentPage)
-      }).catch(err => {
-        console.log(err)
       })
+        .then(res => {
+          console.log(res)
+          this.loadAirticle(this.currentPage)
+        })
+        .catch(err => {
+          console.log(err)
+        })
     }
   },
   created () {
