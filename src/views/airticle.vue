@@ -16,8 +16,9 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="频道列表">
-          <el-select placeholder="请选择" v-model="filterForm.channel_id">
+          <el-select placeholder="请选择" v-model="channel_id" @change=onCategoryChange>
             <template>
+              <el-option :value="null">所有频道</el-option>
               <el-option
                 v-for="item in category"
                 :key="item.id"
@@ -131,11 +132,8 @@ export default {
       ],
       // 文章类别
       category: [],
-      // 筛选表单
-      filterForm: {
-        // 频道
-        channel_id: ''
-      }
+      // 频道
+      channel_id: null
     }
   },
   methods: {
@@ -147,7 +145,8 @@ export default {
         url: '/articles',
         params: {
           page: page,
-          status: this.status
+          status: this.status,
+          channel_id: this.channel_id
         }
       })
         .then(res => {
@@ -179,6 +178,12 @@ export default {
 
     // 单选切换筛选
     onRadiochange: function () {
+      this.loadAirticle(1)
+    },
+
+    // 频道切换渲染
+    onCategoryChange: function () {
+      console.log(this.channel_id)
       this.loadAirticle(1)
     }
   },
