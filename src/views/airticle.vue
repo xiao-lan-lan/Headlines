@@ -15,7 +15,7 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="频道列表">
-          <el-select placeholder="请选择" v-model="category.id">
+          <el-select placeholder="请选择" v-model="filterForm.channel_id">
             <template>
               <el-option
                 v-for="item in category"
@@ -44,12 +44,15 @@
 
     <!-- 内容部分 -->
     <el-card class="box-card" shadow="never" style="margin-top:15px">
-      共找到59938条符合条件的内容
+      共找到 {{total_count}} 条符合条件的内容
       <div class="line"></div>
+
+      <!-- 表格数据 -->
       <el-table :data="airticleData" style="width: 100%" class="airtable">
         <el-table-column prop="date" label="头像" width="180" align="center">
           <template slot-scope="scope">
-            <img :src="scope.row.cover.images[0]" width="80px" />
+            <img :src="scope.row.cover.images[0]" width="80px" v-if="scope.row.cover.images[0]" />
+            <img src="../assets/img/avatar.jpg" alt v-else width="80px" />
           </template>
         </el-table-column>
         <el-table-column prop="title" label="标题" width="180" align="center"></el-table-column>
@@ -66,6 +69,14 @@
           <el-button type="danger" plain size="mini" icon="el-icon-delete">删除</el-button>
         </el-table-column>
       </el-table>
+
+      <!-- 分页器 -->
+      <el-pagination
+        background layout="prev, pager, next"
+        :total="total_count"
+        style="margin-top:25px;text-align:center"
+        @current-change="onChangePage"
+      ></el-pagination>
     </el-card>
     <!-- / 内容部分 -->
   </div>
@@ -78,10 +89,13 @@ export default {
     return {
       radio: 3,
       value1: '',
+      // 文章总数
+      total_count: 0,
       form: {
         name: '',
         region: ''
       },
+      // 文章状态
       airticleStatus: [
         {
           type: 'info',
@@ -104,7 +118,7 @@ export default {
           label: '已删除'
         }
       ],
-      // 文章列表设置初始数据，图片会报错
+      // 文章列表
       airticleData: [
         // {
         //   pubdate: '',
@@ -114,28 +128,37 @@ export default {
         //   }
         // }
       ],
-      category: []
+      // 文章类别
+      category: [],
+      // 筛选表单
+      filterForm: {
+        // 频道
+        channel_id: ''
+      }
     }
   },
   methods: {
-    loadAirticle: function () {
+
+    // 渲染文章列表
+    loadAirticle: function (page) {
       this.$axios({
         method: 'GET',
-        url: '/articles'
+        url: '/articles',
+        params: {
+          page: page
+        }
       })
         .then(res => {
           console.log(res.data)
-          res.data.data.results.forEach(item => {
-            if (!item.cover.images.length) {
-              item.cover.images[0] = 'http://img55.it168.com/ArticleImages/fnw/2016/1027/dab91b30-22e8-47be-b273-ed397f592088.jpg'
-            }
-          })
           this.airticleData = res.data.data.results
+          this.total_count = res.data.data.total_count
         })
         .catch(err => {
           console.log(err)
         })
     },
+
+    // 渲染文章类别
     loadCategory: function () {
       this.$axios({
         method: 'GET',
@@ -144,10 +167,16 @@ export default {
         console.log(res.data)
         this.category = res.data.data.channels
       })
+    },
+
+    // 分页器切换渲染
+    onChangePage: function (page) {
+      console.log(page)
+      this.loadAirticle(page)
     }
   },
   created () {
-    this.loadAirticle()
+    this.loadAirticle(1)
     this.loadCategory()
   }
 }
