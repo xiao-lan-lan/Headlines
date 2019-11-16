@@ -17,15 +17,25 @@
           <el-radio-group v-model="articleform.cover.type">
             <el-radio :label="1">单图</el-radio>
             <el-radio :label="3">三图</el-radio>
-            <el-radio :label="0">无图</el-radio>
+            <el-radio :label="'0'">无图</el-radio>
             <el-radio :label="-1">自动</el-radio>
           </el-radio-group>
         </el-form-item>
 
         <el-form-item label="频道">
-          <el-select v-model="articleform.channel_id" placeholder="请选择频道">
-            <el-option label="区域一" value="shanghai"></el-option>
-            <el-option label="区域二" value="beijing"></el-option>
+          <el-select placeholder="请选择" v-model="articleform.channel_id">
+            <template>
+              <el-option :value="null">所有频道</el-option>
+              <el-option
+                v-for="item in category"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              >
+                <span style="float: left">{{ item.name }}</span>
+                <!-- <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span> -->
+              </el-option>
+            </template>
           </el-select>
         </el-form-item>
 
@@ -47,16 +57,49 @@ export default {
         title: '',
         content: '',
         cover: {
-          type: 0
+          type: 0,
+          images: []
         },
         channel_id: ''
-      }
+      },
+      category: []
     }
   },
   methods: {
     onSubmit (draft) {
       console.log(draft)
+      this.$axios({
+        method: 'POST',
+        url: '/articles',
+        params: {
+          draft
+        },
+        data: this.articleform
+      }).then(res => {
+        console.log(res.status)
+        if (res.status === 201) {
+          this.$message({
+            message: '恭喜你，发表成功',
+            type: 'success'
+          })
+          this.$router.push('/airticle')
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+    loadCategory: function () {
+      this.$axios({
+        method: 'GET',
+        url: '/channels'
+      }).then(res => {
+        console.log(res.data)
+        this.category = res.data.data.channels
+      })
     }
+  },
+  created () {
+    this.loadCategory()
   }
 }
 </script>
