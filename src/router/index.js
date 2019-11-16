@@ -16,11 +16,24 @@ import comment from '../views/comment.vue'
 import material from '../views/material.vue'
 import GraphicData from '../views/Graphic_data.vue'
 
+import JSONbig from 'json-bigint'
+
 // 配置插件
 Vue.use(VueRouter)
 
 axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0'
 axios.defaults.headers = { Authorization: `Bearer ${localStorage.getItem('user')}` }
+axios.defaults.transformResponse = [function (data, headers) {
+  // Do whatever you want to transform the data
+  // console.log(data)
+  // console.log(JSONbig.parse(data).data.results[0].id)
+
+  try {
+    return JSONbig.parse(data)
+  } catch (error) {
+    return {}
+  }
+}]
 Vue.prototype.$axios = axios
 
 const routes = [

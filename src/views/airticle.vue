@@ -16,7 +16,7 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="频道列表">
-          <el-select placeholder="请选择" v-model="channel_id" @change=onCategoryChange>
+          <el-select placeholder="请选择" v-model="channel_id" @change="onCategoryChange">
             <template>
               <el-option :value="null">所有频道</el-option>
               <el-option
@@ -59,7 +59,10 @@
             <img src="../assets/img/avatar.jpg" alt v-else width="80px" />
           </template>
         </el-table-column>
+
         <el-table-column prop="title" label="标题" width="180" align="center"></el-table-column>
+
+        <!-- 表格里只能渲染普通文本，如何需要使用其他标签，需要用template包裹，template绑定slot-scope="scope" scope.row为遍历项-->
         <el-table-column prop="status" label="状态" align="center">
           <template slot-scope="scope">
             <el-tag
@@ -67,16 +70,27 @@
             >{{airticleStatus[scope.row.status].label}}</el-tag>
           </template>
         </el-table-column>
+
         <el-table-column prop="pubdate" label="时间" align="center"></el-table-column>
+
         <el-table-column prop="id" label="操作" align="center">
-          <el-button type="primary" plain size="mini" icon="el-icon-edit">修改</el-button>
-          <el-button type="danger" plain size="mini" icon="el-icon-delete">删除</el-button>
+          <template slot-scope="scope">
+            <el-button type="primary" plain size="mini" icon="el-icon-edit">修改</el-button>
+            <el-button
+              type="danger"
+              plain
+              size="mini"
+              icon="el-icon-delete"
+              @click="onDelete(scope.row.id)"
+            >删除</el-button>
+          </template>
         </el-table-column>
       </el-table>
 
       <!-- 分页器 -->
       <el-pagination
-        background layout="prev, pager, next"
+        background
+        layout="prev, pager, next"
         :total="total_count"
         style="margin-top:25px;text-align:center"
         @current-change="onChangePage"
@@ -148,7 +162,6 @@ export default {
     }
   },
   methods: {
-
     // 渲染文章列表
     loadAirticle: function (page) {
       this.$axios({
@@ -204,6 +217,20 @@ export default {
     // 日期筛选切换
     onDateChange: function () {
       this.loadAirticle(this.currentPage)
+    },
+
+    // 删除
+    onDelete: function (id) {
+      console.log(id)
+      this.$axios({
+        method: 'DELETE',
+        url: `/articles/${id}`
+      }).then(res => {
+        console.log(res)
+        this.loadAirticle(this.currentPage)
+      }).catch(err => {
+        console.log(err)
+      })
     }
   },
   created () {
