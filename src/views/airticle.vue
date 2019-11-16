@@ -33,11 +33,13 @@
         </el-form-item>
         <el-form-item label="时间选择">
           <el-date-picker
-            v-model="value1"
+            v-model="rangeDate"
+            value-format="yyyy-MM-dd"
             type="daterange"
             range-separator="-"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
+            @change="onDateChange"
           ></el-date-picker>
         </el-form-item>
       </el-form>
@@ -89,14 +91,17 @@ export default {
   name: 'airticle',
   data () {
     return {
+      // 文章状态
       status: null,
-      value1: '',
+
+      // 日期范围
+      rangeDate: '',
+      begin_pubdate: '',
+      end_pubdate: '',
+
       // 文章总数
       total_count: 0,
-      form: {
-        name: '',
-        region: ''
-      },
+
       // 文章状态
       airticleStatus: [
         {
@@ -120,6 +125,7 @@ export default {
           label: '已删除'
         }
       ],
+
       // 文章列表
       airticleData: [
         // {
@@ -130,8 +136,10 @@ export default {
         //   }
         // }
       ],
+
       // 文章类别
       category: [],
+
       // 频道
       channel_id: null
     }
@@ -146,7 +154,9 @@ export default {
         params: {
           page: page,
           status: this.status,
-          channel_id: this.channel_id
+          channel_id: this.channel_id,
+          begin_pubdate: this.rangeDate[0],
+          end_pubdate: this.rangeDate[1]
         }
       })
         .then(res => {
@@ -184,6 +194,11 @@ export default {
     // 频道切换渲染
     onCategoryChange: function () {
       console.log(this.channel_id)
+      this.loadAirticle(1)
+    },
+
+    // 日期筛选切换
+    onDateChange: function () {
       this.loadAirticle(1)
     }
   },
