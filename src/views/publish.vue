@@ -10,14 +10,14 @@
         </el-form-item>
 
         <el-form-item label="内容">
-          <el-input type="textarea" v-model="articleform.content"></el-input>
+          <quillEditor v-model="articleform.content" class="richtext"></quillEditor>
         </el-form-item>
 
         <el-form-item label="封面">
           <el-radio-group v-model="articleform.cover.type">
             <el-radio :label="1">单图</el-radio>
             <el-radio :label="3">三图</el-radio>
-            <el-radio :label="'0'">无图</el-radio>
+            <el-radio :label="0">无图</el-radio>
             <el-radio :label="-1">自动</el-radio>
           </el-radio-group>
         </el-form-item>
@@ -49,8 +49,17 @@
 </template>
 
 <script>
+// 富文本框
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
+
+import { quillEditor } from 'vue-quill-editor'
 export default {
   name: 'publistArticle',
+  components: {
+    quillEditor
+  },
   data () {
     return {
       articleform: {
@@ -104,5 +113,8 @@ export default {
 }
 </script>
 
-<style>
+<style lang='less' scoped>
+  .richtext .ql-container.ql-snow {
+    height: 30px;
+  }
 </style>
