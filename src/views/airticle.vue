@@ -6,12 +6,13 @@
       <div class="line"></div>
       <el-form ref="form" label-width="80px" class="airForm">
         <el-form-item label="文章状态">
-          <el-radio-group v-model="radio">
-            <el-radio :label="3">全部</el-radio>
-            <el-radio :label="6">草稿</el-radio>
-            <el-radio :label="9">待审核</el-radio>
-            <el-radio :label="12">审核通过</el-radio>
-            <el-radio :label="15">审核失败</el-radio>
+          <el-radio-group v-model="status" @change="onRadiochange">
+            <el-radio :label="null">全部</el-radio>
+            <el-radio :label="0">草稿</el-radio>
+            <el-radio :label="1">待审核</el-radio>
+            <el-radio :label="2">审核通过</el-radio>
+            <el-radio :label="3">审核失败</el-radio>
+            <!-- <el-radio :label="4">已删除</el-radio> -->
           </el-radio-group>
         </el-form-item>
         <el-form-item label="频道列表">
@@ -87,7 +88,7 @@ export default {
   name: 'airticle',
   data () {
     return {
-      radio: 3,
+      status: null,
       value1: '',
       // 文章总数
       total_count: 0,
@@ -145,7 +146,8 @@ export default {
         method: 'GET',
         url: '/articles',
         params: {
-          page: page
+          page: page,
+          status: this.status
         }
       })
         .then(res => {
@@ -173,6 +175,11 @@ export default {
     onChangePage: function (page) {
       console.log(page)
       this.loadAirticle(page)
+    },
+
+    // 单选切换筛选
+    onRadiochange: function () {
+      this.loadAirticle(1)
     }
   },
   created () {
