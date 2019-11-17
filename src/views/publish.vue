@@ -1,5 +1,11 @@
 <template>
-  <div class="publish">
+  <div
+    class="publish"
+    v-loading="loading"
+    element-loading-text="拼命加载中"
+    element-loading-spinner="el-icon-loading"
+    element-loading-background="rgba(0, 0, 0, 0.8)"
+  >
     <el-card class="box-card">
       <div slot="header" class="clearfix">
         <span>发表文章</span>
@@ -80,8 +86,8 @@ export default {
   },
   data () {
     return {
-      id: '',
       articleform: {
+        id: '',
         title: '',
         content: '',
         cover: {
@@ -91,7 +97,8 @@ export default {
         channel_id: ''
       },
       category: [],
-      dialogTableVisible: false
+      dialogTableVisible: false,
+      loading: true
     }
   },
   methods: {
@@ -141,11 +148,18 @@ export default {
         url: `/articles/${id}`
       }).then(res => {
         console.log(res.data)
+        res.data.data.id.toString()
+        console.log(res.data.data.id.toString())
         this.articleform = res.data.data
       }).catch(err => {
         console.log(err)
+      }).finally(() => {
+        this.loading = false
       })
     }
+
+    // 编辑文章
+
   },
   created () {
     this.loadCategory()
