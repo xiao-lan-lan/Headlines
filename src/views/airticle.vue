@@ -83,7 +83,13 @@
 
         <el-table-column prop="id" label="操作" align="center">
           <template slot-scope="scope">
-            <el-button type="primary" plain size="mini" icon="el-icon-edit">修改</el-button>
+            <el-button
+              type="primary"
+              plain
+              size="mini"
+              icon="el-icon-edit"
+              @click="onEdit(scope.row.id)"
+            >修改</el-button>
             <el-button
               type="danger"
               plain
@@ -261,6 +267,12 @@ export default {
           message: '已取消删除'
         })
       })
+    },
+
+    // 修改
+    onEdit: function (id) {
+      console.log(id)
+      this.$router.push(`/publish/${id}`)
     }
   },
   created () {

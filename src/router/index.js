@@ -38,10 +38,10 @@ Vue.prototype.$axios = axios
 
 const routes = [
   // 单页应用：一级路由就是登录页和主页外壳;
-  // {
-  //   path: '/',
-  //   redirect: '/login'
-  // },
+  {
+    path: '/',
+    redirect: '/login'
+  },
   {
     path: '/login',
     component: login
@@ -60,7 +60,7 @@ const routes = [
         component: airticle
       },
       {
-        path: '/publish',
+        path: '/publish/:id',
         component: publish
       },
       {

@@ -22,6 +22,24 @@
           </el-radio-group>
         </el-form-item>
 
+        <el-form-item>
+          <el-card :body-style="{ padding: '0px' }" @click.native="dialogTableVisible = true">
+            <img
+              src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
+              class="image"
+            />
+          </el-card>
+
+          <el-dialog :visible.sync="dialogTableVisible">
+            <el-tabs type="border-card">
+              <el-tab-pane label="素材库">素材库</el-tab-pane>
+              <el-tab-pane label="上传图片">
+
+              </el-tab-pane>
+            </el-tabs>
+          </el-dialog>
+        </el-form-item>
+
         <el-form-item label="频道">
           <el-select placeholder="请选择" v-model="articleform.channel_id">
             <template>
@@ -71,7 +89,8 @@ export default {
         },
         channel_id: ''
       },
-      category: []
+      category: [],
+      dialogTableVisible: false
     }
   },
   methods: {
@@ -85,18 +104,20 @@ export default {
           draft
         },
         data: this.articleform
-      }).then(res => {
-        console.log(res.status)
-        if (res.status === 201) {
-          this.$message({
-            message: '恭喜你，发表成功',
-            type: 'success'
-          })
-          this.$router.push('/airticle')
-        }
-      }).catch(err => {
-        console.log(err)
       })
+        .then(res => {
+          console.log(res.status)
+          if (res.status === 201) {
+            this.$message({
+              message: '恭喜你，发表成功',
+              type: 'success'
+            })
+            this.$router.push('/airticle')
+          }
+        })
+        .catch(err => {
+          console.log(err)
+        })
     },
 
     // 渲染文章类别
@@ -108,10 +129,26 @@ export default {
         console.log(res.data)
         this.category = res.data.data.channels
       })
+    },
+
+    // 渲染指定文章
+    loadOneArticle: function () {
+      const id = this.$route.params.id
+      console.log(id)
+      this.$axios({
+        method: 'GET',
+        url: `/articles/${id}`
+      }).then(res => {
+        console.log(res.data)
+        this.articleform = res.data.data
+      }).catch(err => {
+        console.log(err)
+      })
     }
   },
   created () {
     this.loadCategory()
+    this.loadOneArticle()
   }
 }
 </script>
@@ -120,9 +157,8 @@ export default {
 .content {
   margin-bottom: 30px;
   height: 350px;
-   .richtext{
+  .richtext {
     height: 260px;
   }
 }
-
 </style>
