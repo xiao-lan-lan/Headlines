@@ -60,6 +60,10 @@ const routes = [
         component: airticle
       },
       {
+        path: '/publish',
+        component: publish
+      },
+      {
         path: '/publish/:id',
         component: publish
       },

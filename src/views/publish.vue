@@ -80,6 +80,7 @@ export default {
   },
   data () {
     return {
+      id: '',
       articleform: {
         title: '',
         content: '',
