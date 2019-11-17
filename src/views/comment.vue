@@ -1,6 +1,7 @@
 <template>
   <div class="comment">
     <el-card>
+      <!-- 评论数据表格 -->
       <el-table :data="commentData" border style="width: 100%">
         <el-table-column prop="title" label="标题" width="350"></el-table-column>
         <el-table-column prop="comment_status" label="评论状态" align="center">
@@ -18,6 +19,16 @@
           </template>
         </el-table-column>
       </el-table>
+
+      <!-- 分页器 -->
+      <el-pagination
+        class="pagination"
+        @current-change="handleCurrentChange"
+        :page-size="10"
+        layout="total, prev, pager, next, jumper"
+        :total="total_count"
+      ></el-pagination>
+
     </el-card>
   </div>
 </template>
@@ -27,19 +38,20 @@ export default {
   name: 'comment',
   data () {
     return {
-      commentData: [{
-
-      }],
-      comment_status: true
+      commentData: [],
+      comment_status: true,
+      total_count: '',
+      current_page: ''
     }
   },
   methods: {
-    loadComments () {
+    // 渲染评论列表
+    loadComments (page) {
       this.$axios({
         method: 'GET',
         url: '/articles',
         params: {
-          page: 1,
+          page: page,
           per_page: 10,
           response_type: 'comment'
         }
@@ -47,6 +59,7 @@ export default {
         .then(res => {
           console.log(res.data)
           this.commentData = res.data.data.results
+          this.total_count = res.data.data.total_count
           res.data.data.results.forEach(item => {
             this.comment_status = item.comment_status
           })
@@ -54,16 +67,25 @@ export default {
         .catch(err => {
           console.log(err)
         })
+    },
+
+    handleCurrentChange (page) {
+      console.log(page)
+      this.loadComments(page)
     }
   },
   created () {
-    this.loadComments()
+    this.loadComments(1)
   }
 }
 </script>
 
 <style lang='less' scoped>
 .comment {
+  .pagination {
+    margin: 30px 0;
+    text-align: center;
+  }
   .edit {
     margin-right: 15px;
   }
