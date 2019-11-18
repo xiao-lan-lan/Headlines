@@ -26,7 +26,7 @@
 
         <el-table-column label="操作" align="center">
           <template>
-            <el-link type="danger">关闭评论</el-link>
+            <el-link type="danger">修改评论</el-link>
           </template>
         </el-table-column>
       </el-table>
