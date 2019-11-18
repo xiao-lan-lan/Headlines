@@ -16,7 +16,12 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="频道列表">
-          <el-select placeholder="请选择" v-model="channel_id" @change="onCategoryChange">
+
+          <!-- 抽取的频道组件 -->
+          <!-- <category v-model="channel_id"></category> -->
+          <category :value="channel_id" @input="channel_id=$event"></category>
+
+          <!-- <el-select placeholder="请选择" v-model="channel_id" @change="onCategoryChange">
             <template>
               <el-option :value="null">所有频道</el-option>
               <el-option
@@ -26,10 +31,11 @@
                 :value="item.id"
               >
                 <span style="float: left">{{ item.name }}</span>
-                <!-- <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span> -->
+                <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span>
               </el-option>
             </template>
-          </el-select>
+          </el-select> -->
+
         </el-form-item>
         <el-form-item label="时间选择">
           <el-date-picker
@@ -115,8 +121,14 @@
 </template>
 
 <script>
+// 引入抽取的频道组件
+import category from '../components/category.vue'
+
 export default {
   name: 'airticle',
+  components: {
+    category
+  },
   data () {
     return {
       // 文章状态
@@ -165,10 +177,10 @@ export default {
         // }
       ],
 
-      // 文章类别
-      category: [],
+      // // 文章类别
+      // category: [],
 
-      // 频道
+      // // 频道
       channel_id: null,
 
       // 当前页
@@ -205,15 +217,15 @@ export default {
     },
 
     // 渲染文章类别
-    loadCategory: function () {
-      this.$axios({
-        method: 'GET',
-        url: '/channels'
-      }).then(res => {
-        console.log(res.data)
-        this.category = res.data.data.channels
-      })
-    },
+    // loadCategory: function () {
+    //   this.$axios({
+    //     method: 'GET',
+    //     url: '/channels'
+    //   }).then(res => {
+    //     console.log(res.data)
+    //     this.category = res.data.data.channels
+    //   })
+    // },
 
     // 分页器切换渲染
     onChangePage: function (page) {
@@ -228,10 +240,10 @@ export default {
     },
 
     // 频道切换渲染
-    onCategoryChange: function () {
-      console.log(this.channel_id)
-      this.loadAirticle(this.currentPage)
-    },
+    // onCategoryChange: function () {
+    //   console.log(this.channel_id)
+    //   this.loadAirticle(this.currentPage)
+    // },
 
     // 日期筛选切换
     onDateChange: function () {
@@ -277,7 +289,7 @@ export default {
   },
   created () {
     this.loadAirticle(1)
-    this.loadCategory()
+    // this.loadCategory()
   }
 }
 </script>

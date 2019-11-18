@@ -47,7 +47,11 @@
         </el-form-item>
 
         <el-form-item label="频道">
-          <el-select placeholder="请选择" v-model="articleform.channel_id">
+
+          <!-- 抽取频道组件 -->
+         <category :value="articleform.channel_id" @input="articleform.channel_id=$event"></category>
+
+          <!-- <el-select placeholder="请选择" v-model="articleform.channel_id">
             <template>
               <el-option :value="null">所有频道</el-option>
               <el-option
@@ -57,10 +61,11 @@
                 :value="item.id"
               >
                 <span style="float: left">{{ item.name }}</span>
-                <!-- <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span> -->
+                <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span>
               </el-option>
             </template>
-          </el-select>
+          </el-select> -->
+
         </el-form-item>
 
         <el-form-item>
@@ -79,10 +84,14 @@ import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
 
 import { quillEditor } from 'vue-quill-editor'
+
+// 引入抽取的频道列表
+import category from '../components/category.vue'
 export default {
   name: 'publistArticle',
   components: {
-    quillEditor
+    quillEditor,
+    category
   },
   data () {
     return {
@@ -96,7 +105,7 @@ export default {
         },
         channel_id: ''
       },
-      category: [],
+      // category: [],
       dialogTableVisible: false,
       loading: true
     }
@@ -114,17 +123,17 @@ export default {
     },
 
     // 渲染文章类别
-    loadCategory: function () {
-      this.$axios({
-        method: 'GET',
-        url: '/channels'
-      }).then(res => {
-        console.log(res.data)
-        this.category = res.data.data.channels
-      }).finally(() => {
-        this.loading = false
-      })
-    },
+    // loadCategory: function () {
+    //   this.$axios({
+    //     method: 'GET',
+    //     url: '/channels'
+    //   }).then(res => {
+    //     console.log(res.data)
+    //     this.category = res.data.data.channels
+    //   }).finally(() => {
+    //     this.loading = false
+    //   })
+    // },
 
     // 渲染指定文章
     loadOneArticle: function () {
@@ -197,8 +206,11 @@ export default {
 
   },
   created () {
-    this.loadCategory()
+    // this.loadCategory()
     this.loadOneArticle()
+  },
+  mounted () {
+    this.loading = false
   }
 }
 </script>
