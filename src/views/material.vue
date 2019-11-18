@@ -24,34 +24,66 @@
         ></el-image>
       </div>
 
+      <!-- 分页器 -->
+      <el-pagination
+        @current-change=onPageChange
+        @size-change=onSizeChange
+        :current-page="1"
+        :page-sizes="[20, 40, 60]"
+        :page-size="20"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total_count"
+        style="text-align:center"
+        background
+      ></el-pagination>
     </el-card>
   </div>
 </template>
 
 <script>
 export default {
+  name: 'material',
   data () {
     return {
-      images: []
+      images: [],
+      total_count: 0
     }
   },
   methods: {
-    loadMaterial () {
+
+    // 加载素材图片
+    loadMaterial (page, perpage) {
       this.$axios({
         method: 'GET',
-        url: '/user/images'
+        url: '/user/images',
+        params: {
+          page: page,
+          per_page: perpage
+        }
       })
         .then(res => {
           console.log(res.data)
           this.images = res.data.data.results
+          this.total_count = res.data.data.total_count
         })
         .catch(err => {
           console.log(err)
         })
+    },
+
+    // 分页器
+    onPageChange (page) {
+      console.log(page)
+      this.loadMaterial(page, 20)
+    },
+
+    onSizeChange (pageSize) {
+      console.log(pageSize)
+      this.loadMaterial(1, pageSize)
     }
   },
   created () {
-    this.loadMaterial()
+    this.loadMaterial(1, 20)
   }
 }
 </script>
