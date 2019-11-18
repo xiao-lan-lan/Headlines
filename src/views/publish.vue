@@ -8,7 +8,7 @@
   >
     <el-card class="box-card">
       <div slot="header" class="clearfix">
-        <span>发表文章</span>
+        <span>{{ $route.params.id?'编辑文章':'发布文章' }}</span>
       </div>
       <el-form ref="form" :model="articleform" label-width="80px">
         <el-form-item label="标题">
@@ -102,9 +102,51 @@ export default {
     }
   },
   methods: {
-    // 发表文章
+
+    // 点击按钮
     onSubmit (draft) {
       console.log(draft)
+      if (this.$route.params.id) {
+        this.editArticle(draft)
+      } else {
+        this.addArticle(draft)
+      }
+    },
+
+    // 渲染文章类别
+    loadCategory: function () {
+      this.$axios({
+        method: 'GET',
+        url: '/channels'
+      }).then(res => {
+        console.log(res.data)
+        this.category = res.data.data.channels
+      }).finally(() => {
+        this.loading = false
+      })
+    },
+
+    // 渲染指定文章
+    loadOneArticle: function () {
+      const id = this.$route.params.id
+      console.log(id)
+      if (id) {
+        this.$axios({
+          method: 'GET',
+          url: `/articles/${id}`
+        }).then(res => {
+          console.log(res.data)
+          this.articleform = res.data.data
+        }).catch(err => {
+          console.log(err)
+        }).finally(() => {
+          this.loading = false
+        })
+      }
+    },
+
+    // 发表文章
+    addArticle: function (draft) {
       this.$axios({
         method: 'POST',
         url: '/articles',
@@ -128,37 +170,30 @@ export default {
         })
     },
 
-    // 渲染文章类别
-    loadCategory: function () {
-      this.$axios({
-        method: 'GET',
-        url: '/channels'
-      }).then(res => {
-        console.log(res.data)
-        this.category = res.data.data.channels
-      })
-    },
-
-    // 渲染指定文章
-    loadOneArticle: function () {
-      const id = this.$route.params.id
-      console.log(id)
-      this.$axios({
-        method: 'GET',
-        url: `/articles/${id}`
-      }).then(res => {
-        console.log(res.data)
-        res.data.data.id.toString()
-        console.log(res.data.data.id.toString())
-        this.articleform = res.data.data
-      }).catch(err => {
-        console.log(err)
-      }).finally(() => {
-        this.loading = false
-      })
-    }
-
     // 编辑文章
+    editArticle: function (draft) {
+      this.$axios({
+        method: 'PUT',
+        url: `/articles/${this.$route.params.id}`,
+        params: {
+          draft
+        },
+        data: this.articleform
+      })
+        .then(res => {
+          console.log(res.status)
+          if (res.status === 201) {
+            this.$message({
+              message: '恭喜你，编辑成功',
+              type: 'success'
+            })
+            this.$router.push('/airticle')
+          }
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
 
   },
   created () {

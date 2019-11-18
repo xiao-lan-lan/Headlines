@@ -12,7 +12,8 @@
         </el-header>
         <el-main style="background-color:#f2f3f5">
           <!-- 二级路由容器 -->
-          <router-view></router-view>
+          <!-- 发表和编辑文章共用同一组件，防止就地复用 -->
+          <router-view :key="$route.path"></router-view>
         </el-main>
       </el-container>
     </el-container>
