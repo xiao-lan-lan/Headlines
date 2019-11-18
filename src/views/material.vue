@@ -7,8 +7,16 @@
 
       <!-- 按钮 -->
       <el-button-group>
-        <el-button type="primary" plain>全部</el-button>
-        <el-button type="primary" plain>收藏</el-button>
+        <el-button
+          type="primary"
+          plain
+          @click="loadMaterial(1)"
+        >全部</el-button>
+        <el-button
+          type="primary"
+          plain
+          @click="loadMaterial(1,20,true)"
+        >收藏</el-button>
       </el-button-group>
 
       <el-button type="primary" style="float:right">上传图片</el-button>
@@ -36,6 +44,7 @@
         style="text-align:center"
         background
       ></el-pagination>
+
     </el-card>
   </div>
 </template>
@@ -52,13 +61,14 @@ export default {
   methods: {
 
     // 加载素材图片
-    loadMaterial (page, perpage) {
+    loadMaterial (page, perpage, collect) {
       this.$axios({
         method: 'GET',
         url: '/user/images',
         params: {
           page: page,
-          per_page: perpage
+          per_page: perpage,
+          collect: collect
         }
       })
         .then(res => {
