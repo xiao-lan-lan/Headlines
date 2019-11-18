@@ -21,6 +21,7 @@ import JSONbig from 'json-bigint'
 // 配置插件
 Vue.use(VueRouter)
 
+// axios配置
 axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0'
 axios.defaults.headers = { Authorization: `Bearer ${localStorage.getItem('user')}` }
 axios.defaults.transformResponse = [function (data, headers) {
@@ -96,6 +97,7 @@ const router = new VueRouter({
   routes
 })
 
+// 路由配置
 // 导航守卫,控制只有携带token才能访问页面
 router.beforeEach((to, from, next) => {
   // 开始进度条加载
@@ -122,5 +124,11 @@ router.beforeEach((to, from, next) => {
 router.afterEach(route => {
   NProgress.done()
 })
+
+// 原因：在路由中添加了相同的路由,当前导航上点击当前导航报错。解决：重写路由的push方法
+const routerPush = VueRouter.prototype.push
+VueRouter.prototype.push = function push (location) {
+  return routerPush.call(this, location).catch(error => error)
+}
 
 export default router
