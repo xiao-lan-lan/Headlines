@@ -67,7 +67,7 @@
                 :class="{'el-icon-star-on':image.is_collected,'el-icon-star-off':!image.is_collected}"
                 @click="onCollect(image)"
               ></i>
-              <i class="el-icon-delete"></i>
+              <i class="el-icon-delete" @click="onDelete(image)"></i>
             </div>
           </el-card>
         </el-col>
@@ -167,6 +167,24 @@ export default {
       }).catch(err => {
         console.log(err)
         this.$message.error('操作失败')
+      })
+    },
+
+    // 删除图片
+    onDelete (image) {
+      this.$axios({
+        method: 'DELETE',
+        url: `/user/images/${image.id}`
+      }).then(res => {
+        console.log(res)
+        this.$message({
+          message: '恭喜你，删除成功',
+          type: 'success'
+        })
+        this.loadMaterial(1, 20)
+      }).catch(err => {
+        console.log(err)
+        this.$message.error('删除失败')
       })
     },
 
