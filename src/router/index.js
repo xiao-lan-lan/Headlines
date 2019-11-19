@@ -15,6 +15,7 @@ import publish from '../views/publish.vue'
 import comment from '../views/comment.vue'
 import material from '../views/material.vue'
 import GraphicData from '../views/Graphic_data.vue'
+import detail from '../views/detail.vue'
 
 import JSONbig from 'json-bigint'
 
@@ -71,6 +72,11 @@ const routes = [
       {
         path: '/comment',
         component: comment
+      },
+      {
+        path: '/detail/:id',
+        component: detail,
+        props: true
       },
       {
         path: '/material',

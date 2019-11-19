@@ -25,8 +25,8 @@
         </el-table-column>
 
         <el-table-column label="操作" align="center">
-          <template>
-            <el-link type="danger">修改评论</el-link>
+          <template slot-scope="scope">
+            <el-link type="danger" @click.native="$router.push(`/detail/${scope.row.id}`)">修改评论</el-link>
           </template>
         </el-table-column>
       </el-table>
