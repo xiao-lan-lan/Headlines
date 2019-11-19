@@ -26,7 +26,11 @@
             <i class="el-icon-document"> {{scope.row.reply_count}}</i>
           </template>
         </el-table-column>
-        <el-table-column prop="pubdate" label="评论时间" align="center"></el-table-column>
+        <el-table-column prop="pubdate" label="评论时间" align="center">
+            <template slot-scope="scope">
+                {{scope.row.pubdate | dataFormat}}
+            </template>
+        </el-table-column>
         <el-table-column label="操作" align="center">
           <template>
             <el-link type="primary" >推荐</el-link>
@@ -58,6 +62,14 @@
 </template>
 
 <script>
+// 日期格式化库
+import Vue from 'vue'
+import moment from 'moment'
+// 过滤器，格式化时间
+Vue.filter('dataFormat', (data) => {
+  return moment(data).format('YYYY-MM-DD HH:mm:SS')
+})
+
 export default {
   name: 'detail',
   data () {
@@ -84,6 +96,11 @@ export default {
       type: String
     }
   },
+  //   filters: {
+  //     dataFormat: function (data) {
+  //       return moment(data).format('YYYY-MM-DD HH:mm:SS')
+  //     }
+  //   },
   created () {
     this.loadArticlecomment()
   },
@@ -99,7 +116,7 @@ export default {
       }).then(res => {
         console.log(res.data)
         this.commentData = res.data.data.results
-        this.art_pubdate = res.data.data.art_pubdate
+        this.art_pubdate = moment(res.data.data.art_pubdate).format('YYYY-MM-DD HH:mm:SS')
         this.art_title = res.data.data.art_title
       }).catch(err => {
         console.log(err)
