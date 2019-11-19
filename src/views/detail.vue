@@ -12,8 +12,8 @@
       </div>
 
       <!-- 评论列表 -->
-      <el-table :data="commentData" style="width: 100%" >
-        <el-table-column label="头像"  align="center">
+      <el-table :data="commentData" style="width: 100%">
+        <el-table-column label="头像" align="center">
           <template slot-scope="scope">
             <img :src="scope.row.aut_photo" width="80px" />
           </template>
@@ -22,20 +22,23 @@
         <el-table-column prop="content" label="评论内容"></el-table-column>
         <el-table-column label="数据显示" align="center">
           <template slot-scope="scope">
-            <i class="el-icon-thumb" style="margin-right:20px"> {{scope.row.like_count}}</i>
-            <i class="el-icon-document"> {{scope.row.reply_count}}</i>
+            <i class="el-icon-thumb" style="margin-right:20px">{{scope.row.like_count}}</i>
+            <i class="el-icon-document">{{scope.row.reply_count}}</i>
           </template>
         </el-table-column>
         <el-table-column prop="pubdate" label="评论时间" align="center">
-            <template slot-scope="scope">
-                {{scope.row.pubdate | dataFormat}}
-            </template>
+          <template slot-scope="scope">{{scope.row.pubdate | dataFormat}}</template>
         </el-table-column>
         <el-table-column label="操作" align="center">
-          <template>
-            <el-link type="primary" >推荐</el-link>
+          <template slot-scope="scope">
+            <el-link type="primary">{{scope.row.is_top?'取消推荐':'推荐'}}</el-link>
             <el-link type="success" style="margin:0 10px">回复</el-link>
-            <el-link type="warning" >点赞</el-link>
+            <el-link
+              type="warning"
+              @click.native="onNoLike(scope.row)"
+              v-if="scope.row.is_liking"
+            >取消点赞</el-link>
+            <el-link type="warning" @click.native="onLike(scope.row)" v-else>点赞</el-link>
           </template>
         </el-table-column>
       </el-table>
@@ -66,7 +69,7 @@
 import Vue from 'vue'
 import moment from 'moment'
 // 过滤器，格式化时间
-Vue.filter('dataFormat', (data) => {
+Vue.filter('dataFormat', data => {
   return moment(data).format('YYYY-MM-DD HH:mm:SS')
 })
 
@@ -79,6 +82,7 @@ export default {
 
       // 文章标题
       art_title: '',
+
       commentData: [
         {
           aut_photo: '',
@@ -86,7 +90,9 @@ export default {
           content: '',
           like_count: '',
           reply_count: '',
-          pubdate: ''
+          pubdate: '',
+          is_liking: 0,
+          is_top: 0
         }
       ]
     }
@@ -113,13 +119,52 @@ export default {
           type: 'a',
           source: this.id
         }
+      })
+        .then(res => {
+          console.log(res.data)
+          this.commentData = res.data.data.results
+          this.art_pubdate = moment(res.data.data.art_pubdate).format(
+            'YYYY-MM-DD HH:mm:SS'
+          )
+          this.art_title = res.data.data.art_title
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+    onLike: function (comment) {
+      console.log(comment)
+      this.$axios({
+        method: 'POST',
+        url: '/comment/likings',
+        data: {
+          target: comment.com_id
+        }
       }).then(res => {
-        console.log(res.data)
-        this.commentData = res.data.data.results
-        this.art_pubdate = moment(res.data.data.art_pubdate).format('YYYY-MM-DD HH:mm:SS')
-        this.art_title = res.data.data.art_title
-      }).catch(err => {
-        console.log(err)
+        console.log(res)
+        this.$message({
+          message: '恭喜你，点赞成功',
+          type: 'success'
+        })
+        comment.is_liking = 1
+        this.loadArticlecomment()
+      })
+    },
+    onNoLike: function (comment) {
+      this.$axios({
+        method: 'DELETE',
+        url: `/comment/likings/${comment.com_id}`,
+        data: {
+          target: comment.com_id
+        }
+      }).then(res => {
+        console.log(res)
+        this.$message({
+          message: '恭喜你，取消点赞成功',
+          type: 'success'
+        })
+        comment.is_liking = 0
+        this.loadArticlecomment()
       })
     }
   }
