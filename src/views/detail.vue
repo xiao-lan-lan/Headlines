@@ -31,7 +31,7 @@
         </el-table-column>
         <el-table-column label="操作" align="center">
           <template slot-scope="scope">
-            <el-link type="primary">{{scope.row.is_top?'取消推荐':'推荐'}}</el-link>
+            <el-link type="primary" @click="onChangeTop(scope.row)">{{scope.row.is_top?'取消推荐':'推荐'}}</el-link>
             <el-link type="success" style="margin:0 10px">回复</el-link>
             <el-link
               type="warning"
@@ -111,6 +111,7 @@ export default {
     this.loadArticlecomment()
   },
   methods: {
+    // 加载评论列表
     loadArticlecomment: function () {
       this.$axios({
         method: 'GET',
@@ -132,6 +133,8 @@ export default {
           console.log(err)
         })
     },
+
+    // 点赞
     onLike: function (comment) {
       console.log(comment)
       this.$axios({
@@ -150,6 +153,8 @@ export default {
         this.loadArticlecomment()
       })
     },
+
+    // 取消点赞
     onNoLike: function (comment) {
       this.$axios({
         method: 'DELETE',
@@ -165,6 +170,27 @@ export default {
         })
         comment.is_liking = 0
         this.loadArticlecomment()
+      })
+    },
+
+    // 修改置顶状态
+    onChangeTop: function (comment) {
+      this.$axios({
+        method: 'PUT',
+        url: `/comments/${comment.com_id}/sticky`,
+        data: {
+          sticky: !comment.is_top
+        }
+      }).then(res => {
+        console.log(res)
+        comment.is_top = !comment.is_top
+        this.$message({
+          message: '恭喜你，操作成功',
+          type: 'success'
+        })
+        this.loadArticlecomment()
+      }).catch(err => {
+        console.log(err)
       })
     }
   }
