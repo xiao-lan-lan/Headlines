@@ -7,7 +7,7 @@
 
       <!-- 按钮 -->
       <el-button-group>
-        <el-button type="primary" plain @click="loadMaterial(1)">全部</el-button>
+        <el-button type="primary" plain @click="loadMaterial(1)" autofocus>全部</el-button>
         <el-button type="primary" plain @click="loadMaterial(1,20,true)">收藏</el-button>
       </el-button-group>
 
@@ -57,10 +57,16 @@
           :key="image.id"
           class="image"
         >
-          <el-card :body-style="{ padding: '0px' }" style="width:180px;height:200px;background-color:#f4f5f6">
+          <el-card
+            :body-style="{ padding: '0px' }"
+            style="width:180px;height:200px;background-color:#f4f5f6"
+          >
             <el-image :src="image.url" fit="cover" style="width:180px;height:160px"></el-image>
             <div style="display:flex;justify-content:space-evenly;">
-              <i class="el-icon-star-on"></i>
+              <i
+                :class="{'el-icon-star-on':image.is_collected,'el-icon-star-off':!image.is_collected}"
+                @click="onCollect(image)"
+              ></i>
               <i class="el-icon-delete"></i>
             </div>
           </el-card>
@@ -140,6 +146,28 @@ export default {
     onSizeChange (pageSize) {
       console.log(pageSize)
       this.loadMaterial(1, pageSize)
+    },
+
+    // 收藏图片
+    onCollect (image) {
+      console.log(image)
+      this.$axios({
+        method: 'PUT',
+        url: `/user/images/${image.id}`,
+        data: {
+          collect: !image.is_collected
+        }
+      }).then(res => {
+        console.log(res.data)
+        image.is_collected = res.data.data.collect
+        this.$message({
+          message: '恭喜你，操作成功',
+          type: 'success'
+        })
+      }).catch(err => {
+        console.log(err)
+        this.$message.error('操作失败')
+      })
     },
 
     // 上传图片
