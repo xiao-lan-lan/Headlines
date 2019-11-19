@@ -12,8 +12,21 @@
       </el-button-group>
 
       <!-- 上传图片 -->
-      <el-button type="primary" style="float:right" @click="dialogTableVisible = true">上传图片</el-button>
+      <!-- 此组件默认发送请求，请求方式post，地址写在action,请求头要自己定义 -->
+      <el-upload
+        class="upload-demo"
+        style="float:right"
+        action="http://ttapi.research.itcast.cn/mp/v1_0/user/images"
+        :headers="uploadHeaders"
+        :limit="3"
+        name="image"
+        :on-success="uploadsuccess"
+        :show-file-list="false"
+      >
+        <el-button size="small" type="primary">点击上传</el-button>
+      </el-upload>
 
+      <!-- <el-button type="primary" style="float:right" @click="dialogTableVisible = true">上传图片</el-button>
       <el-dialog title="上传图片" :visible.sync="dialogTableVisible" center>
         <div class="block">
           <el-image>
@@ -43,7 +56,7 @@
         <span slot="footer" class="dialog-footer">
           <el-button @click="dialogTableVisible = false" type="primary">关闭</el-button>
         </span>
-      </el-dialog>
+      </el-dialog>-->
 
       <!-- 图片 -->
       <el-row :gutter="5" style="margin-left:30px">
@@ -105,14 +118,9 @@ export default {
     return {
       images: [],
       total_count: 0,
-      dialogTableVisible: false,
-      fileList: [
-        {
-          name: 'food.jpeg',
-          url:
-            'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-        }
-      ]
+      uploadHeaders: {
+        Authorization: `Bearer ${localStorage.getItem('user')}`
+      }
     }
   },
   methods: {
@@ -157,17 +165,19 @@ export default {
         data: {
           collect: !image.is_collected
         }
-      }).then(res => {
-        console.log(res.data)
-        image.is_collected = res.data.data.collect
-        this.$message({
-          message: '恭喜你，操作成功',
-          type: 'success'
-        })
-      }).catch(err => {
-        console.log(err)
-        this.$message.error('操作失败')
       })
+        .then(res => {
+          console.log(res.data)
+          image.is_collected = res.data.data.collect
+          this.$message({
+            message: '恭喜你，操作成功',
+            type: 'success'
+          })
+        })
+        .catch(err => {
+          console.log(err)
+          this.$message.error('操作失败')
+        })
     },
 
     // 删除图片
@@ -175,28 +185,28 @@ export default {
       this.$axios({
         method: 'DELETE',
         url: `/user/images/${image.id}`
-      }).then(res => {
-        console.log(res)
-        this.$message({
-          message: '恭喜你，删除成功',
-          type: 'success'
-        })
-        this.loadMaterial(1, 20)
-      }).catch(err => {
-        console.log(err)
-        this.$message.error('删除失败')
       })
+        .then(res => {
+          console.log(res)
+          this.$message({
+            message: '恭喜你，删除成功',
+            type: 'success'
+          })
+          this.loadMaterial(1, 20)
+        })
+        .catch(err => {
+          console.log(err)
+          this.$message.error('删除失败')
+        })
     },
 
-    // 上传图片
-    submitUpload () {
-      this.$refs.upload.submit()
-    },
-    handleRemove (file, fileList) {
-      console.log(file, fileList)
-    },
-    handlePreview (file) {
-      console.log(file)
+    // 图片上传成功钩子
+    uploadsuccess () {
+      this.$message({
+        message: '恭喜你，上传成功',
+        type: 'success'
+      })
+      this.loadMaterial(1, 20)
     }
   },
   created () {
