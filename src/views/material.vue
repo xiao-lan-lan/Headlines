@@ -46,7 +46,27 @@
       </el-dialog>
 
       <!-- 图片 -->
-      <div class="block">
+      <el-row :gutter="5" style="margin-left:30px">
+        <el-col
+          :xs="12"
+          :sm="8"
+          :md="6"
+          :lg="6"
+          :xl="4"
+          v-for="image in images"
+          :key="image.id"
+          class="image"
+        >
+          <el-card :body-style="{ padding: '0px' }" style="width:180px;height:200px;background-color:#f4f5f6">
+            <el-image :src="image.url" fit="cover" style="width:180px;height:160px"></el-image>
+            <div style="display:flex;justify-content:space-evenly;">
+              <i class="el-icon-star-on"></i>
+              <i class="el-icon-delete"></i>
+            </div>
+          </el-card>
+        </el-col>
+      </el-row>
+      <!-- <div class="block">
         <el-image
           style="width: 150px; height: 150px"
           :src="image.url"
@@ -54,7 +74,7 @@
           v-for="image in images"
           :key="image.id"
         ></el-image>
-      </div>
+      </div>-->
 
       <!-- 分页器 -->
       <el-pagination
@@ -141,18 +161,29 @@ export default {
 
 <style lang='less' scoped>
 .material {
-  .block {
-    // margin: 30px 0 0 30px;
-    .el-image {
-      border-radius: 10px;
-      overflow: hidden;
-      margin: 30px 30px;
-      .edit {
-        width: 150px;
-        height: 30px;
-        background-color: #f4f5f6;
-      }
+  .el-col {
+    border-radius: 4px;
+  }
+  .image {
+    margin-top: 40px;
+    margin-bottom: 30px;
+    i {
+      font-size: 22px;
+      margin-top: 5px;
     }
   }
+  // .block {
+  //   // margin: 30px 0 0 30px;
+  //   .el-image {
+  //     border-radius: 10px;
+  //     overflow: hidden;
+  //     margin: 30px 30px;
+  //     .edit {
+  //       width: 150px;
+  //       height: 30px;
+  //       background-color: #f4f5f6;
+  //     }
+  //   }
+  // }
 }
 </style>
