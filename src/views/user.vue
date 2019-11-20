@@ -14,7 +14,25 @@
               height="60px"
               style="display:block;border-radius: 50%;margin-bottom:5px"
             />
-            <el-link type="primary">更换头像</el-link>
+            <el-link type="primary" @click="dialogTableVisible = true">更换头像</el-link>
+
+            <el-dialog
+              title="上传头像"
+              :visible.sync="dialogTableVisible"
+            >
+              <el-upload
+                class="avatar-uploader"
+                action="https://jsonplaceholder.typicode.com/posts/"
+                :show-file-list="false"
+                :on-success="handleAvatarSuccess"
+                :before-upload="beforeAvatarUpload"
+              >
+                <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+              </el-upload>
+              <el-button type="primary">确定</el-button>
+              <el-button>取消</el-button>
+            </el-dialog>
           </div>
           <!-- 姓名 -->
           <div class="rightcontent" style="float:left" v-if="editname">
@@ -35,12 +53,7 @@
               <el-button @click="editname=true">取消</el-button>
             </el-form-item>
           </div>
-          <el-button
-            type="primary"
-            style="float:right"
-            @click="onEditName"
-            v-show="editname"
-          >修改</el-button>
+          <el-button type="primary" style="float:right" @click="onEditName" v-show="editname">修改</el-button>
         </div>
 
         <!-- 账号信息 -->
@@ -107,7 +120,9 @@ export default {
         photo: ''
       },
       editname: true,
-      editemail: true
+      editemail: true,
+      dialogTableVisible: false,
+      imageUrl: ''
     }
   },
   methods: {
@@ -157,17 +172,19 @@ export default {
           name: this.userForm.name,
           intro: this.userForm.intro
         }
-      }).then(res => {
-        console.log(res.data)
-        this.editname = !this.editname
-        this.$message({
-          message: '恭喜你，修改成功',
-          type: 'success'
-        })
-      }).catch(err => {
-        console.log(err)
-        this.$message.error('错了哦，修改失败')
       })
+        .then(res => {
+          console.log(res.data)
+          this.editname = !this.editname
+          this.$message({
+            message: '恭喜你，修改成功',
+            type: 'success'
+          })
+        })
+        .catch(err => {
+          console.log(err)
+          this.$message.error('错了哦，修改失败')
+        })
     },
 
     // 保存修改用户邮箱
@@ -178,19 +195,37 @@ export default {
         data: {
           email: this.userForm.email
         }
-      }).then(res => {
-        console.log(res.data)
-        this.editemail = !this.editemail
-        this.$message({
-          message: '恭喜你，修改成功',
-          type: 'success'
-        })
-      }).catch(err => {
-        console.log(err)
-        this.$message.error('错了哦，修改失败')
       })
-    }
+        .then(res => {
+          console.log(res.data)
+          this.editemail = !this.editemail
+          this.$message({
+            message: '恭喜你，修改成功',
+            type: 'success'
+          })
+        })
+        .catch(err => {
+          console.log(err)
+          this.$message.error('错了哦，修改失败')
+        })
+    },
 
+    // 上传图片
+    handleAvatarSuccess (res, file) {
+      this.imageUrl = URL.createObjectURL(file.raw)
+    },
+    beforeAvatarUpload (file) {
+      const isJPG = file.type === 'image/jpeg'
+      const isLt2M = file.size / 1024 / 1024 < 2
+
+      if (!isJPG) {
+        this.$message.error('上传头像图片只能是 JPG 格式!')
+      }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!')
+      }
+      return isJPG && isLt2M
+    }
   },
   created () {
     this.loadUser()
@@ -225,5 +260,28 @@ export default {
       }
     }
   }
+}
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409eff;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+.avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
 }
 </style>
