@@ -31,14 +31,14 @@
               <el-input v-model="userForm.intro" style="width:300px"></el-input>
             </el-form-item>
             <el-form-item style="padding-left:60px;margin-top:50px">
-              <el-button type="primary">保存</el-button>
-              <el-button>取消</el-button>
+              <el-button type="primary" @click="onchangeName">保存</el-button>
+              <el-button @click="editname=true">取消</el-button>
             </el-form-item>
           </div>
           <el-button
             type="primary"
             style="float:right"
-            @click="editname=!editname"
+            @click="onEditName"
             v-show="editname"
           >修改</el-button>
         </div>
@@ -71,7 +71,12 @@
         <el-form-item label="邮箱" class="userinfo">
           <div class="rightcontent" v-if="editemail">
             <span style="margin-left:0">{{userForm.email}}</span>
-            <el-button type="primary" style="float:right" v-show="editemail" @click="editemail=!editemail">修改邮箱</el-button>
+            <el-button
+              type="primary"
+              style="float:right"
+              v-show="editemail"
+              @click="onEditEmail"
+            >修改邮箱</el-button>
           </div>
           <!-- 编辑状态 -->
           <div class="editemail" style="margin-left:30px" v-else>
@@ -79,8 +84,8 @@
               <el-input v-model="userForm.email" style="width:300px"></el-input>
             </el-form-item>
             <el-form-item style="margin-top:20px">
-              <el-button type="primary">保存</el-button>
-              <el-button>取消</el-button>
+              <el-button type="primary" @click="onchangeEmail">保存</el-button>
+              <el-button @click="editemail=true">取消</el-button>
             </el-form-item>
           </div>
         </el-form-item>
@@ -91,6 +96,7 @@
 
 <script>
 export default {
+  name: 'user',
   data () {
     return {
       userForm: {
@@ -118,7 +124,73 @@ export default {
         .catch(err => {
           console.log(err)
         })
+    },
+
+    // 点击修改用户姓名
+    onEditEmail () {
+      this.editemail = !this.editemail
+      if (!this.editname && !this.editemail) {
+        this.$message({
+          message: '警告哦，请关掉其他正在编辑的内容',
+          type: 'warning'
+        })
+      }
+    },
+
+    // 点击修改用户邮箱
+    onEditName () {
+      this.editname = !this.editname
+      if (!this.editname && !this.editemail) {
+        this.$message({
+          message: '警告哦，请关掉其他正在编辑的内容',
+          type: 'warning'
+        })
+      }
+    },
+
+    // 保存修改用户姓名
+    onchangeName () {
+      this.$axios({
+        method: 'PATCH',
+        url: '/user/profile',
+        data: {
+          name: this.userForm.name,
+          intro: this.userForm.intro
+        }
+      }).then(res => {
+        console.log(res.data)
+        this.editname = !this.editname
+        this.$message({
+          message: '恭喜你，修改成功',
+          type: 'success'
+        })
+      }).catch(err => {
+        console.log(err)
+        this.$message.error('错了哦，修改失败')
+      })
+    },
+
+    // 保存修改用户邮箱
+    onchangeEmail () {
+      this.$axios({
+        method: 'PATCH',
+        url: '/user/profile',
+        data: {
+          email: this.userForm.email
+        }
+      }).then(res => {
+        console.log(res.data)
+        this.editemail = !this.editemail
+        this.$message({
+          message: '恭喜你，修改成功',
+          type: 'success'
+        })
+      }).catch(err => {
+        console.log(err)
+        this.$message.error('错了哦，修改失败')
+      })
     }
+
   },
   created () {
     this.loadUser()
