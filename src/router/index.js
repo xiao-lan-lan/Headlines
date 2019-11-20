@@ -16,6 +16,7 @@ import comment from '../views/comment.vue'
 import material from '../views/material.vue'
 import GraphicData from '../views/Graphic_data.vue'
 import detail from '../views/detail.vue'
+import user from '../views/user.vue'
 
 import JSONbig from 'json-bigint'
 
@@ -85,6 +86,10 @@ const routes = [
       {
         path: '/graphicdata',
         component: GraphicData
+      },
+      {
+        path: '/user',
+        component: user
       }
     ]
   }
