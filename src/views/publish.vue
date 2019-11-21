@@ -29,12 +29,13 @@
         </el-form-item>
 
         <!-- 上传图片组件 -->
-        <uploadImage></uploadImage>
+        <el-form-item>
+          <uploadImage v-for="item in articleform.cover.type" :key="item" style="float:left"></uploadImage>
+        </el-form-item>
 
         <el-form-item label="频道">
-
           <!-- 抽取频道组件 -->
-         <category :value="articleform.channel_id" @input="articleform.channel_id=$event"></category>
+          <category :value="articleform.channel_id" @input="articleform.channel_id=$event"></category>
 
           <!-- <el-select placeholder="请选择" v-model="articleform.channel_id">
             <template>
@@ -49,8 +50,7 @@
                 <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span>
               </el-option>
             </template>
-          </el-select> -->
-
+          </el-select>-->
         </el-form-item>
 
         <el-form-item>
@@ -100,7 +100,6 @@ export default {
     }
   },
   methods: {
-
     // 点击按钮
     onSubmit (draft) {
       console.log(draft)
@@ -132,14 +131,17 @@ export default {
         this.$axios({
           method: 'GET',
           url: `/articles/${id}`
-        }).then(res => {
-          console.log(res.data)
-          this.articleform = res.data.data
-        }).catch(err => {
-          console.log(err)
-        }).finally(() => {
-          this.loading = false
         })
+          .then(res => {
+            console.log(res.data)
+            this.articleform = res.data.data
+          })
+          .catch(err => {
+            console.log(err)
+          })
+          .finally(() => {
+            this.loading = false
+          })
       }
     },
 
@@ -192,7 +194,6 @@ export default {
           console.log(err)
         })
     }
-
   },
   created () {
     // this.loadCategory()

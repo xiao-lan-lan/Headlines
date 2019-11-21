@@ -15,7 +15,6 @@
       <!-- tab标签 -->
       <el-tabs type="border-card">
         <el-tab-pane label="素材库">
-
           <!-- 单选按钮组 -->
           <el-radio-group v-model="radio1">
             <el-radio-button label="全部"></el-radio-button>
@@ -23,6 +22,13 @@
           </el-radio-group>
         </el-tab-pane>
         <el-tab-pane label="上传图片"></el-tab-pane>
+
+        <!-- 图片素材 -->
+        <el-row :gutter="20">
+          <el-col :span="6" v-for="item in 15" :key="item">
+            <div class="grid-content bg-purple">123</div>
+          </el-col>
+        </el-row>
 
         <!-- button组 -->
         <el-button type="primary">确定</el-button>
@@ -51,8 +57,8 @@ export default {
     width: 200px;
     text-align: center;
     background-color: #eee;
-    margin-left: 80px;
-    margin-bottom: 30px;
+    margin-right: 20px;
+    // margin-bottom: 30px;
     padding-top: 8px;
   }
 }
