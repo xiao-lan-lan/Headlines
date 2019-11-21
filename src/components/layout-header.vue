@@ -15,11 +15,11 @@
           <span>消息</span>
         </el-tooltip>
         <!-- 头像 -->
-        <img src="../assets/img/avatar.jpg" alt />
+        <img :src="user.photo" height="50px" />
         <!-- 用户信息 -->
         <el-dropdown style="float:left">
           <span class="el-dropdown-link">
-            小可爱
+            {{user.name}}
             <i class="el-icon-arrow-down el-icon--right"></i>
           </span>
           <el-dropdown-menu slot="dropdown">
@@ -36,6 +36,15 @@
 
 <script>
 export default {
+  name: 'layoutHeader',
+  data () {
+    return {
+      user: {
+        name: '',
+        photo: ''
+      }
+    }
+  },
   methods: {
     // 用户退出
     onLogout: function () {
@@ -58,7 +67,21 @@ export default {
             message: '舍不得我嘛？'
           })
         })
+    },
+
+    // 渲染头像、名字
+    loadUser: function () {
+      this.$axios({
+        method: 'GET',
+        url: '/user/profile'
+      }).then(res => {
+        console.log(res.data)
+        this.user = res.data.data
+      })
     }
+  },
+  created () {
+    this.loadUser()
   }
 }
 </script>
