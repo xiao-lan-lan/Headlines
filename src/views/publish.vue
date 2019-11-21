@@ -28,23 +28,8 @@
           </el-radio-group>
         </el-form-item>
 
-        <el-form-item>
-          <el-card :body-style="{ padding: '0px' }" @click.native="dialogTableVisible = true">
-            <img
-              src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
-              class="image"
-            />
-          </el-card>
-
-          <el-dialog :visible.sync="dialogTableVisible">
-            <el-tabs type="border-card">
-              <el-tab-pane label="素材库">素材库</el-tab-pane>
-              <el-tab-pane label="上传图片">
-
-              </el-tab-pane>
-            </el-tabs>
-          </el-dialog>
-        </el-form-item>
+        <!-- 上传图片组件 -->
+        <uploadImage></uploadImage>
 
         <el-form-item label="频道">
 
@@ -87,11 +72,15 @@ import { quillEditor } from 'vue-quill-editor'
 
 // 引入抽取的频道列表
 import category from '../components/category.vue'
+
+// 引入抽取上传图片组件
+import uploadImage from '../components/uploadImage'
 export default {
   name: 'publistArticle',
   components: {
     quillEditor,
-    category
+    category,
+    uploadImage
   },
   data () {
     return {
@@ -106,7 +95,7 @@ export default {
         channel_id: ''
       },
       // category: [],
-      dialogTableVisible: false,
+      // dialogTableVisible: false,
       loading: true
     }
   },
