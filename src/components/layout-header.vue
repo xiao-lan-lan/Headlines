@@ -35,6 +35,7 @@
 </template>
 
 <script>
+import EventBus from './EventsBus.vue'
 export default {
   name: 'layoutHeader',
   data () {
@@ -82,6 +83,10 @@ export default {
   },
   created () {
     this.loadUser()
+    EventBus.$on('updataUser', (userobj) => {
+      console.log(userobj)
+      this.user = userobj
+    })
   }
 }
 </script>

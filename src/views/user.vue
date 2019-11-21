@@ -108,6 +108,8 @@
 </template>
 
 <script>
+// 事件中转
+import EventBus from '../components/EventsBus.vue'
 export default {
   name: 'user',
   data () {
@@ -182,6 +184,8 @@ export default {
             message: '恭喜你，修改成功',
             type: 'success'
           })
+          // 通过中转通知，传递更新后的个人资料对象
+          EventBus.$emit('updataUser', this.userForm)
         })
         .catch(err => {
           console.log(err)
@@ -227,6 +231,7 @@ export default {
           console.log(res.data)
           this.imageUrl = res.data.data.photo
           this.userForm.photo = res.data.data.photo
+          EventBus.$emit('updataUser', this.userForm)
         })
         .catch(err => {
           console.log(err)
