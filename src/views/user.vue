@@ -17,10 +17,16 @@
             <el-link type="primary" @click="dialogTableVisible = true">更换头像</el-link>
 
             <el-dialog title="上传头像" :visible.sync="dialogTableVisible">
-              <el-upload ref="upload" class="avatar-uploader" action :http-request="onUploadimg">
+              <el-upload
+                ref="upload"
+                class="avatar-uploader"
+                action
+                :http-request="onUploadimg"
+              >
                 <img v-if="imageUrl" :src="imageUrl" class="avatar" />
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
               </el-upload>
+
               <el-button type="primary" @click="submitUpload">确定</el-button>
               <el-button @click="dialogTableVisible = false">取消</el-button>
             </el-dialog>
@@ -226,11 +232,18 @@ export default {
           console.log(err)
         })
     },
+
+    // 点击确定上传
     submitUpload () {
-      this.$refs.upload.submit()
+      // this.$refs.upload.submit()
       this.dialogTableVisible = false
       // this.loadUser()
     }
+    // submitUpload2 () {
+    //   // this.$refs.upload.submit()
+    //   this.dialogTableVisible = false
+    //   // this.loadUser()
+    // }
   },
   created () {
     this.loadUser()
