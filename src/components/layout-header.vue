@@ -23,8 +23,8 @@
             <i class="el-icon-arrow-down el-icon--right"></i>
           </span>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item icon="el-icon-plus">个人信息</el-dropdown-item>
-            <el-dropdown-item icon="el-icon-circle-plus">Git地址</el-dropdown-item>
+            <el-dropdown-item icon="el-icon-plus" @click.native="$router.push('/user')">个人信息</el-dropdown-item>
+            <el-dropdown-item icon="el-icon-circle-plus"><a href="https://github.com/xiao-lan-lan" target="_blank">Git地址</a></el-dropdown-item>
             <!-- 组件注册原生事件，需要加 .native 修饰符 -->
             <el-dropdown-item icon="el-icon-circle-plus-outline" @click.native="onLogout">退出</el-dropdown-item>
           </el-dropdown-menu>
@@ -43,19 +43,21 @@ export default {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(() => {
-        localStorage.removeItem('user')
-        this.$router.push('/login')
-        this.$message({
-          type: 'success',
-          message: '再见喽'
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '舍不得我嘛？'
-        })
       })
+        .then(() => {
+          localStorage.removeItem('user')
+          this.$router.push('/login')
+          this.$message({
+            type: 'success',
+            message: '再见喽'
+          })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '舍不得我嘛？'
+          })
+        })
     }
   }
 }
@@ -89,4 +91,5 @@ export default {
     }
   }
 }
+
 </style>
