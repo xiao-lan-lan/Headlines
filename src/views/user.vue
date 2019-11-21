@@ -16,32 +16,18 @@
             />
             <el-link type="primary" @click="dialogTableVisible = true">更换头像</el-link>
 
-            <el-dialog
-              title="上传头像"
-              :visible.sync="dialogTableVisible"
-            >
-              <el-upload
-                class="avatar-uploader"
-                action="https://jsonplaceholder.typicode.com/posts/"
-                :show-file-list="false"
-                :on-success="handleAvatarSuccess"
-                :before-upload="beforeAvatarUpload"
-              >
+            <el-dialog title="上传头像" :visible.sync="dialogTableVisible">
+              <el-upload ref="upload" class="avatar-uploader" action :http-request="onUploadimg">
                 <img v-if="imageUrl" :src="imageUrl" class="avatar" />
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
               </el-upload>
-              <el-button type="primary">确定</el-button>
-              <el-button>取消</el-button>
+              <el-button type="primary" @click="submitUpload">确定</el-button>
+              <el-button @click="dialogTableVisible = false">取消</el-button>
             </el-dialog>
-          </div>
-          <!-- 姓名 -->
-          <div class="rightcontent" style="float:left" v-if="editname">
-            <h3>{{userForm.name}}</h3>
-            <span style="margin-left:0;font-size:12px">{{userForm.intro}}</span>
           </div>
 
           <!-- 编辑状态 -->
-          <div class="editname" v-else>
+          <div class="editname" v-if="editname">
             <el-form-item label="名称">
               <el-input v-model="userForm.name" style="width:300px"></el-input>
             </el-form-item>
@@ -50,10 +36,17 @@
             </el-form-item>
             <el-form-item style="padding-left:60px;margin-top:50px">
               <el-button type="primary" @click="onchangeName">保存</el-button>
-              <el-button @click="editname=true">取消</el-button>
+              <el-button @click="editname=false">取消</el-button>
             </el-form-item>
           </div>
-          <el-button type="primary" style="float:right" @click="onEditName" v-show="editname">修改</el-button>
+
+          <!-- 姓名 -->
+          <div class="rightcontent" style="float:left" v-else>
+            <h3>{{userForm.name}}</h3>
+            <span style="margin-left:0;font-size:12px">{{userForm.intro}}</span>
+          </div>
+
+          <el-button type="primary" style="float:right" @click="onEditName" v-show="!editname">修改</el-button>
         </div>
 
         <!-- 账号信息 -->
@@ -82,24 +75,25 @@
 
         <!-- 邮箱 -->
         <el-form-item label="邮箱" class="userinfo">
-          <div class="rightcontent" v-if="editemail">
-            <span style="margin-left:0">{{userForm.email}}</span>
-            <el-button
-              type="primary"
-              style="float:right"
-              v-show="editemail"
-              @click="onEditEmail"
-            >修改邮箱</el-button>
-          </div>
           <!-- 编辑状态 -->
-          <div class="editemail" style="margin-left:30px" v-else>
+          <div class="editemail" style="margin-left:30px" v-if="editemail">
             <el-form-item>
               <el-input v-model="userForm.email" style="width:300px"></el-input>
             </el-form-item>
             <el-form-item style="margin-top:20px">
               <el-button type="primary" @click="onchangeEmail">保存</el-button>
-              <el-button @click="editemail=true">取消</el-button>
+              <el-button @click="editemail=false">取消</el-button>
             </el-form-item>
+          </div>
+
+          <div class="rightcontent" v-else>
+            <span style="margin-left:0">{{userForm.email}}</span>
+            <el-button
+              type="primary"
+              style="float:right"
+              v-show="!editemail"
+              @click="onEditEmail"
+            >修改邮箱</el-button>
           </div>
         </el-form-item>
       </el-form>
@@ -119,8 +113,8 @@ export default {
         intro: '',
         photo: ''
       },
-      editname: true,
-      editemail: true,
+      editname: false,
+      editemail: false,
       dialogTableVisible: false,
       imageUrl: ''
     }
@@ -141,25 +135,27 @@ export default {
         })
     },
 
-    // 点击修改用户姓名
+    // 点击修改用户邮箱
     onEditEmail () {
-      this.editemail = !this.editemail
-      if (!this.editname && !this.editemail) {
+      if (this.editname) {
         this.$message({
           message: '警告哦，请关掉其他正在编辑的内容',
           type: 'warning'
         })
+      } else {
+        this.editemail = true
       }
     },
 
-    // 点击修改用户邮箱
+    // 点击修改用户姓名
     onEditName () {
-      this.editname = !this.editname
-      if (!this.editname && !this.editemail) {
+      if (this.editemail) {
         this.$message({
           message: '警告哦，请关掉其他正在编辑的内容',
           type: 'warning'
         })
+      } else {
+        this.editname = true
       }
     },
 
@@ -210,21 +206,30 @@ export default {
         })
     },
 
-    // 上传图片
-    handleAvatarSuccess (res, file) {
-      this.imageUrl = URL.createObjectURL(file.raw)
+    // 修改头像
+    onUploadimg (params) {
+      console.log(params, '111')
+      console.log(this.$refs)
+      var formData = new FormData()
+      formData.append('photo', params.file)
+      this.$axios({
+        method: 'PATCH',
+        url: '/user/photo',
+        data: formData
+      })
+        .then(res => {
+          console.log(res.data)
+          this.imageUrl = res.data.data.photo
+          this.userForm.photo = res.data.data.photo
+        })
+        .catch(err => {
+          console.log(err)
+        })
     },
-    beforeAvatarUpload (file) {
-      const isJPG = file.type === 'image/jpeg'
-      const isLt2M = file.size / 1024 / 1024 < 2
-
-      if (!isJPG) {
-        this.$message.error('上传头像图片只能是 JPG 格式!')
-      }
-      if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!')
-      }
-      return isJPG && isLt2M
+    submitUpload () {
+      this.$refs.upload.submit()
+      this.dialogTableVisible = false
+      // this.loadUser()
     }
   },
   created () {
