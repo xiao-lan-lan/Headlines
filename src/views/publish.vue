@@ -30,7 +30,13 @@
 
         <!-- 上传图片组件 -->
         <el-form-item>
-          <uploadImage v-for="item in articleform.cover.type" :key="item" style="float:left"></uploadImage>
+          <uploadImage
+            v-for="item in articleform.cover.type"
+            :key="item"
+            style="float:left"
+            :value="articleform.cover.images[item-1]"
+            @input="articleform.cover.images[item-1]=$event"
+          ></uploadImage>
         </el-form-item>
 
         <el-form-item label="频道">

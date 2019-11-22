@@ -2,7 +2,7 @@
   <div class="uploadImage">
     <div class="block" @click="uploadimage">
       <span class="demonstration">点击图标选择图片</span>
-      <img v-if="Imgitem" :src="Imgitem.url" class="avatar" width="180px" height="150px"/>
+      <img v-if="this.value" :src="this.value" class="avatar" width="180px" height="150px"/>
       <i v-else class="el-icon-plus avatar-uploader-icon"></i>
     </div>
 
@@ -69,6 +69,11 @@ export default {
       Imgitem: ''
     }
   },
+  props: {
+    value: {
+      type: String
+    }
+  },
   methods: {
     uploadimage () {
       this.dialogTableVisible = true
@@ -111,6 +116,7 @@ export default {
     // 预览图片
     onPreview () {
       this.dialogTableVisible = false
+      this.$emit('input', this.Imgitem.url)
     }
   }
 }
