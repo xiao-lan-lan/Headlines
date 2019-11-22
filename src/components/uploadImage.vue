@@ -9,9 +9,9 @@
     <!-- 对话框 -->
     <el-dialog :visible.sync="dialogTableVisible">
       <!-- tab标签 -->
-      <el-tabs type="border-card">
+      <el-tabs type="border-card" v-model="activetab">
         <!-- 素材库 -->
-        <el-tab-pane label="素材库">
+        <el-tab-pane label="素材库" name="first">
           <!-- 单选按钮组 -->
           <el-radio-group v-model="radio1">
             <el-radio-button label="全部" @click.native="loadMaterial(1)"></el-radio-button>
@@ -47,7 +47,7 @@
         </el-tab-pane>
 
         <!-- 上传图片 -->
-        <el-tab-pane label="上传图片">
+        <el-tab-pane label="上传图片" name="second">
           <div class="block">
             <span class="demonstration">点击图标选择图片</span>
             <img v-if="PreviewImg" :src="PreviewImg" class="avatar" width="180px" height="150px" />
@@ -87,6 +87,7 @@ export default {
   data () {
     return {
       dialogTableVisible: false,
+      activetab: 'first',
       radio1: '全部',
       total_count: 0,
       images: [],
@@ -145,7 +146,11 @@ export default {
     // 素材库，预览图片
     onPreview () {
       this.dialogTableVisible = false
-      this.$emit('input', this.Imgitem.url)
+      if (this.activetab === 'first') {
+        this.$emit('input', this.Imgitem.url)
+      } else if (this.activetab === 'second') {
+        this.$emit('input', this.PreviewImg)
+      }
     },
 
     // 上传图片，点击发送请求

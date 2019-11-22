@@ -29,13 +29,14 @@
         </el-form-item>
 
         <!-- 上传图片组件 -->
+        <!-- :value="articleform.cover.images[item-1]"
+        @input="articleform.cover.images[item-1]=$event" -->
         <el-form-item>
           <uploadImage
             v-for="item in articleform.cover.type"
             :key="item"
             style="float:left"
-            :value="articleform.cover.images[item-1]"
-            @input="articleform.cover.images[item-1]=$event"
+            v-model="articleform.cover.images[item-1]"
           ></uploadImage>
         </el-form-item>
 
