@@ -18,14 +18,21 @@
         <el-tab-pane label="素材库">
           <!-- 单选按钮组 -->
           <el-radio-group v-model="radio1">
-            <el-radio-button label="全部" @click="loadMaterial(1)"></el-radio-button>
-            <el-radio-button label="收藏" @click="loadMaterial(1,20,true)"></el-radio-button>
+            <el-radio-button label="全部" @click.native="loadMaterial(1)"></el-radio-button>
+            <el-radio-button label="收藏" @click.native="loadMaterial(1,20,true)"></el-radio-button>
           </el-radio-group>
 
           <!-- 图片素材 -->
           <el-row :gutter="20">
-            <el-col :span="6" v-for="image in images" :key="image.id">
+            <el-col
+              :span="6"
+              v-for="image in images"
+              :key="image.id"
+              style="position:relative"
+              @click.native="Imgitem=image"
+            >
               <img :src="image.url" width="100px" height="100px" />
+              <i :class="{'el-icon-check':true, 'img-item':image==Imgitem}"></i>
             </el-col>
           </el-row>
         </el-tab-pane>
@@ -62,7 +69,8 @@ export default {
       dialogTableVisible: false,
       radio1: '全部',
       total_count: 0,
-      images: []
+      images: [],
+      Imgitem: ''
     }
   },
   methods: {
@@ -73,6 +81,7 @@ export default {
 
     // 加载素材图片
     loadMaterial (page, perpage, collect) {
+      console.log('999')
       this.$axios({
         method: 'GET',
         url: '/user/images',
@@ -120,6 +129,17 @@ export default {
   }
   .el-row {
     margin: 20px 0 20px 20px;
+    .el-icon-check {
+      color: rgba(0,0,0,0);
+    }
+    .img-item {
+      font-size: 60px;
+      position: absolute;
+      left: 24px;
+      top: 20px;
+      color: greenyellow;
+      font-weight: bold;
+    }
   }
 }
 </style>
