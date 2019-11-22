@@ -2,12 +2,8 @@
   <div class="uploadImage">
     <div class="block" @click="uploadimage">
       <span class="demonstration">点击图标选择图片</span>
-      <br />
-      <el-image style="margin-top:60px">
-        <div slot="error" class="image-slot">
-          <i class="el-icon-picture-outline"></i>
-        </div>
-      </el-image>
+      <img v-if="Imgitem" :src="Imgitem.url" class="avatar" width="180px" height="150px"/>
+      <i v-else class="el-icon-plus avatar-uploader-icon"></i>
     </div>
 
     <!-- 对话框 -->
@@ -54,7 +50,7 @@
         ></el-pagination>
 
         <!-- button组 -->
-        <el-button type="primary">确定</el-button>
+        <el-button type="primary" @click="onPreview">确定</el-button>
         <el-button @click="dialogTableVisible=false">取消</el-button>
       </el-tabs>
     </el-dialog>
@@ -110,6 +106,11 @@ export default {
     onSizeChange (pageSize) {
       console.log(pageSize)
       this.loadMaterial(1, pageSize)
+    },
+
+    // 预览图片
+    onPreview () {
+      this.dialogTableVisible = false
     }
   }
 }
@@ -125,12 +126,12 @@ export default {
     background-color: #eee;
     margin-right: 20px;
     // margin-bottom: 30px;
-    padding-top: 8px;
+    // padding-top: 8px;
   }
   .el-row {
     margin: 20px 0 20px 20px;
     .el-icon-check {
-      color: rgba(0,0,0,0);
+      color: rgba(0, 0, 0, 0);
     }
     .img-item {
       font-size: 60px;
