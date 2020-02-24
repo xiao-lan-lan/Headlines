@@ -4,9 +4,9 @@
       <!-- 标题 -->
       <el-col :span="8" class="left">
         <i class="el-icon-s-fold" style="font-size:22px"></i>
-        <span class="title">江苏传智播客教育科技股份有限公司</span>
+        <span class="title">xxx科技股份有限公司</span>
       </el-col>
-      <el-col :span="8" class="right">
+      <el-col :span="10" class="right">
         <!-- 搜索&消息 -->
         <el-tooltip class="item" effect="dark" content="搜索" placement="bottom" style="float:left">
           <el-input placeholder="请输入搜索文章的内容" class="search"></el-input>

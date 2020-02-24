@@ -3,7 +3,7 @@
     <!-- logo图片 -->
     <div class="logo">
       <a href>
-        <img src="../assets/img/logo_admin.png" alt />
+        <img src="../assets/img/logo.png" alt />
       </a>
     </div>
     <!-- 导航 -->
@@ -61,6 +61,7 @@ export default {}
     background-color: #2e2f32;
     img {
       width: 120px;
+      height: 60px;
     }
   }
   .el-menu {
