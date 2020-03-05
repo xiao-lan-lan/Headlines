@@ -17,6 +17,7 @@ import material from '../views/material.vue'
 import GraphicData from '../views/Graphic_data.vue'
 import detail from '../views/detail.vue'
 import user from '../views/user.vue'
+import test from '../views/test.vue'
 
 import JSONbig from 'json-bigint'
 
@@ -44,6 +45,10 @@ const routes = [
   {
     path: '/',
     redirect: '/login'
+  },
+  {
+    path: '/test',
+    component: test
   },
   {
     path: '/login',
